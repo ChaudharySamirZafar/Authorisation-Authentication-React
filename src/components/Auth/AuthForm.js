@@ -1,7 +1,7 @@
 import { useState, useRef, useContext } from "react";
 import AuthContext from "../../store/auth-context";
 import classes from "./AuthForm.module.css";
-import { useHistory } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 
 const AuthForm = () => {
   const history = useHistory();
@@ -22,24 +22,29 @@ const AuthForm = () => {
     const enteredEmail = emailInputRef.current.value;
     const enteredPassword = passwordInputRef.current.value;
 
-    // Optional : Add Validation
     setIsLoading(true);
-    let url;
+
+    var url = "http://localhost:8080/api/user/register";
+    var body = JSON.stringify({
+      id: 0,
+      name: enteredEmail,
+      username: enteredEmail,
+      password: enteredPassword,
+      roles: [],
+    });
     if (isLogin) {
       url =
-        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDxuL4qJij-ciV837-YZUmgSPd_ghRwnaY";
-    } else {
-      url =
-        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDxuL4qJij-ciV837-YZUmgSPd_ghRwnaY";
+        "http://localhost:8080/api/login?username=" +
+        enteredEmail +
+        "&password=" +
+        enteredPassword;
+
+      body = JSON.stringify({});
     }
 
     fetch(url, {
       method: "POST",
-      body: JSON.stringify({
-        email: enteredEmail,
-        password: enteredPassword,
-        returnSecureToken: true,
-      }),
+      body: body,
       headers: {
         "Content-Type": "application/json",
       },
@@ -56,8 +61,9 @@ const AuthForm = () => {
         }
       })
       .then((data) => {
-        authCtx.login(data.idToken);
-        history.replace('/');
+        console.log(data);
+        authCtx.login(data.access_token);
+        history.replace("/");
       })
       .catch((err) => {
         alert(err.message);
