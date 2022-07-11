@@ -1,12 +1,8 @@
-import classes from "./ProfileForm.module.css";
 import AuthContext from "../../store/auth-context";
-import React, { useContext, useRef } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useContext } from "react";
 
 const ProfileForm = () => {
-  const history = useHistory();
   const authCtx = useContext(AuthContext);
-  const latestPasswordValue = useRef();
 
   return (
     <React.Fragment>
