@@ -1,12 +1,13 @@
 import { useState, useRef, useContext } from "react";
 import AuthContext from "../../store/auth-context";
 import classes from "./AuthForm.module.css";
+import APIDetails from "../../APIDetails.json";
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const authCtx = useContext(AuthContext);
-
+  
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
 
@@ -22,7 +23,7 @@ const AuthForm = () => {
 
     setIsLoading(true);
 
-    var url = "http://localhost:8080/api/user/register";
+    var url = APIDetails.RegisterURL;
     var body = JSON.stringify({
       id: 0,
       name: enteredEmail,
@@ -31,12 +32,13 @@ const AuthForm = () => {
       roles: [],
     });
     if (isLogin) {
-      url =
-        "http://localhost:8080/api/login?username=" +
-        enteredEmail +
-        "&password=" +
-        enteredPassword;
+      url = APIDetails.SignInURL;
 
+      var urlWithEmail = url.replace("1", enteredEmail);
+      let urlWithEmailAndPassword = urlWithEmail.replace("2", enteredPassword);
+
+      url = urlWithEmailAndPassword;
+      
       body = JSON.stringify({});
     }
 
@@ -59,7 +61,6 @@ const AuthForm = () => {
         }
       })
       .then((data) => {
-        console.log(data);
         authCtx.login(data.access_token);
       })
       .catch((err) => {
